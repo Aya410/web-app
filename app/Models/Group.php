@@ -21,4 +21,8 @@ class Group extends Model
     {
         return $this->belongsTo(Admin::class);
     }
+    public function groupUsers()
+    {
+        return $this->hasMany(group_user::class, 'group_id');
+    }
 }

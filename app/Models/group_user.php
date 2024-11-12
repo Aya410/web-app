@@ -18,4 +18,8 @@ class group_user extends Model
         'group_id',
         'request_join',
     ];
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

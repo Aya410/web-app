@@ -66,4 +66,14 @@ class GroupService
              ]);
          }
      }
+
+
+
+     public function getRequestedGroupsForUser()
+     {
+         return $this->groupRepository->getRequestedGroupsForUser();
+     }
+
+
+
 }    

@@ -31,9 +31,13 @@ Route::group([
     Route::post('/me', [UserAuthController::class, 'me'])->name('me');
     Route::post('/store_group', [GroupController::class, 'store']);
 
-    Route::post('/aya', [GroupController::class, 'createGroup']);
+    Route::get('/getMyGroups', [GroupController::class, 'getMyGroups']);
 
     Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
+
+    
+    Route::post('/store_file', [GroupController::class, 'store_file']);
+    
 });
 
 

@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Admin;
 use App\Models\group_user;
 use App\Repositories\GroupRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -74,6 +75,19 @@ class GroupService
          return $this->groupRepository->getRequestedGroupsForUser();
      }
 
+     public function getPendingGroupsForUser()
+     {
+         // Get the authenticated user's ID
+         $userId = Auth::id();
+ 
+         // Use the repository to fetch groups
+         return $this->groupRepository->getPendingGroupsForUser($userId);
+     }
+
+     public function updateRequestJoin($groupUserId, $requestJoin)
+{
+    return $this->groupRepository->updateRequestJoin($groupUserId, $requestJoin);
+}
 
 
 }    

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('versions', function (Blueprint $table) {
             $table->id();
-            $table->time('time');
+            $table->date('time');
             $table->integer('number')->default(0);
             $table->string('file');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');

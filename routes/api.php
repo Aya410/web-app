@@ -38,6 +38,12 @@ Route::group([
     
     Route::post('/store_file', [GroupController::class, 'store_file']);
     
+    Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
+
+    Route::post('/getPendingGroupsForAuthUser', [GroupController::class, 'getPendingGroupsForAuthUser']);
+    Route::post('/updateRequestJoin', [GroupController::class, 'updateRequestJoin']);
+    
+    
 });
 
 

@@ -5,9 +5,10 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\GroupService;
+use App\Http\Requests\UpdateRequestJoinRequest;
 use App\Models\Group;
 use App\Http\Requests\GroupRequest;
-
+use App\Http\Requests\FileRequest;
 use App\Http\Requests\FileUploadRequest;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
@@ -100,7 +101,7 @@ class GroupController extends Controller
     }
 
 
-    public function getMyGroups(Request $request)
+    public function getMyGroups()
     {
     
 
@@ -123,5 +124,37 @@ class GroupController extends Controller
             'file' => $createdFile,
         ], 201);
     }
+    public function getFilesByGroupId(FileRequest $request)
+    {
+          // Retrieve the validated group_id
+          $groupId = $request->input('group_id');
+        $files = $this->fileService->getFilesWithVersionsByGroupId($groupId);
+        
+        return response()->json($files, 200);
+    }
+
     
+    public function getPendingGroupsForAuthUser()
+    {
+        // Fetch pending groups from the service
+        $groups = $this->groupService->getPendingGroupsForUser();
+        
+        // Return the groups as JSON response
+        return response()->json($groups, 200);
+    }
+
+
+
+    public function updateRequestJoin(UpdateRequestJoinRequest $request)
+{
+    // Retrieve the validated input data
+    $data = $request->validated();
+    $groupUserId = $data['group_user_id']; // The ID of the group_user
+    $requestJoin = $data['request_join']; // The request_join value (boolean)
+
+    // Pass the validated data to the service layer
+    $updatedGroupUser = $this->groupService->updateRequestJoin($groupUserId, $requestJoin);
+
+    return response()->json($updatedGroupUser, 200);
+}
     }

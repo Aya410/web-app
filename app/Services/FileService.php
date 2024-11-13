@@ -40,4 +40,8 @@ class FileService
 
         return $file;
     }
+    public function getFilesWithVersionsByGroupId($groupId)
+    {
+        return $this->fileRepository->getFilesWithVersionsByGroupId($groupId);
+    }
 }

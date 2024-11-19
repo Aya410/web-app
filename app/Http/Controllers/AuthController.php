@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\AuthService;
 use Illuminate\Foundation\Auth\User;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Validator;
 
 
-class UserAuthController extends Controller
+class AuthController extends Controller
 {
-    public function __construct()
+    protected $authService;
+    public function __construct(AuthService $authService1)
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->authService = $authService1;
     }
 
 
@@ -20,25 +24,30 @@ class UserAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register() {
-        $validator = Validator::make(request()->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+    public function register(RegisterRequest $request)
+     {
+        return $this->authService->register($request);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $user = new User;
-        $user->name = request()->name;
-        $user->email = request()->email;
-        $user->password = bcrypt(request()->password);
-        $user->save();
-
-        return response()->json($user, 201);
     }
+    // public function register() {
+    //     $validator = Validator::make(request()->all(), [
+    //         'name' => 'required',
+    //         'email' => 'required|email|unique:users',
+    //         'password' => 'required|string|min:8',
+    //     ]);
+
+    //     if($validator->fails()){
+    //         return response()->json($validator->errors()->toJson(), 400);
+    //     }
+
+    //     $user = new User;
+    //     $user->name = request()->name;
+    //     $user->email = request()->email;
+    //     $user->password = bcrypt(request()->password);
+    //     $user->save();
+
+    //     return response()->json($user, 201);
+    // }
 
 
     /**

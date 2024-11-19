@@ -22,18 +22,7 @@ class GroupRepository
     {
         return User::all(); // Retrieve all users from the User model
     }
-/*
-    public function getRequestedGroupsForUser()
-    {
-        $userId = Auth::id();
 
-        return Group::whereHas('groupUsers', function ($query) use ($userId) {
-                $query->where('user_id', $userId)
-                      ->where('request_join', 1);
-            })
-            ->select('id','name', 'description', 'photo')
-            ->get();
-    }*/
     public function getRequestedGroupsForUser()
     {
         $userId = Auth::id();
@@ -65,19 +54,7 @@ class GroupRepository
     {
         return Version::create($data);
     }
-/*
-    public function getFilesWithVersionsByGroupId(int $groupId)
-    {
-        // Retrieve files that belong to the specified group_id
-        return File::where('group_id', $groupId)
-            ->with(['versions' => function($query) {
 
-                $query->select('file', 'number', 'id', 'file_id');
-            }])
-            ->get(['id', 'name']);
-            
-    }
-*/
 public function getFilesWithVersionsByGroupId(int $groupId)
 {
     return File::where('group_id', $groupId)
@@ -146,7 +123,37 @@ public function getFilesWithVersionsByGroupId(int $groupId)
         
         return $groupUser; 
     }
-    
 
 
+
+
+
+ public function getByFileId($fileId)
+    {
+        return Version::select([
+                'versions.id',
+                'versions.file_id',
+                'versions.user_id',
+                'versions.number',
+                'versions.time',
+                'versions.file',
+                'versions.created_at',
+                'users.name as user_name', // Include user name
+            ])
+            ->join('users', 'users.id', '=', 'versions.user_id') // Join with the users table
+            ->where('versions.file_id', $fileId)
+            ->get()
+            ->map(function ($version) {
+                return [
+                    'id' => $version->id,
+                    'file_id' => $version->file_id,
+                    'user_id' => $version->user_id,
+                    'number' => $version->number,
+                    'time' => $version->time, // Already a datetime
+                    'file' => url($version->file), 
+                    'user_name' => $version->user_name,
+                    'created_date' => $version->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+    }
 }

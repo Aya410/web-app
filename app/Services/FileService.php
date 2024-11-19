@@ -94,4 +94,12 @@ class FileService
     {
         return $this->fileRepository->getFilesWithVersionsByGroupId($groupId);
     }
+
+
+        public function getFileVersions($fileId)
+    {
+        return $this->fileRepository->getByFileId($fileId);
+    }
+    
+
 }

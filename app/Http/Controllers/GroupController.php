@@ -15,7 +15,7 @@ use App\Http\Requests\FileUploadRequest;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\UpdateRequestJoinRequest;
-
+use App\Http\Requests\GetFileVersionsRequest;
 class GroupController extends Controller
 {
  protected $groupService;
@@ -105,4 +105,14 @@ class GroupController extends Controller
 
  return response()->json($updatedGroupUser, 200);
 }
+
+public function getFileVersions(GetFileVersionsRequest $request)
+{
+    $fileId = $request->input('file_id');
+    $versions = $this->fileService->getFileVersions($fileId);
+    return response()->json($versions);
+}
+
+
+
 }

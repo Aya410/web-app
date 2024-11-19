@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Middleware\CheckUser;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserAuthController;
-use App\Http\Controllers\Plat_AdminAuthController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
 /*
 |--------------------------------------------------------------------------
@@ -16,46 +16,44 @@ use App\Http\Controllers\GroupController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 Route::group([
-
-    'prefix' => 'auth/user'
-
+    'prefix' => 'auth'
 ], function ($router) {
-    Route::post('/register', [UserAuthController::class, 'register'])->name('register');
-    Route::post('/login', [UserAuthController::class, 'login'])->name('login');
-    Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
-    Route::post('/refresh', [UserAuthController::class, 'refresh'])->name('refresh');
-    Route::post('/me', [UserAuthController::class, 'me'])->name('me');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
+    Route::post('/me', [AuthController::class, 'me'])->name('me');
+});
+
+
+//middleware name (check_user , check_groupadmin  , check_superadmin)
+
+
+
+
+
     Route::post('/store_group', [GroupController::class, 'store']);
 
     Route::get('/getMyGroups', [GroupController::class, 'getMyGroups']);
 
     Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
 
-    
+
     Route::post('/store_file', [GroupController::class, 'store_file']);
-    
+
     Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
 
     Route::post('/getPendingGroupsForAuthUser', [GroupController::class, 'getPendingGroupsForAuthUser']);
     Route::post('/updateRequestJoin', [GroupController::class, 'updateRequestJoin']);
-    
-    
-});
+    Route::post('/getFileVersions', [GroupController::class, 'getFileVersions']);
 
 
-Route::group([
 
-    'prefix' => 'auth/plat_admin'
 
-], function ($router) {
-    Route::post('/pregister', [Plat_AdminAuthController::class, 'register'])->name('pregister');
-    Route::post('/plogin', [Plat_AdminAuthController::class, 'login'])->name('plogin');
-    Route::post('/plogout', [Plat_AdminAuthController::class, 'logout'])->name('plogout');
-    Route::post('/prefresh', [Plat_AdminAuthController::class, 'refresh'])->name('prefresh');
-    Route::post('/pme', [Plat_AdminAuthController::class, 'me'])->name('pme');
-});
+
+
 

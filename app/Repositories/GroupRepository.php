@@ -223,4 +223,10 @@ public function getFilesWithVersionsByGroupId(int $groupId)
             });
     }
 
+       // Fetch groups created by the admin (matching admin_id)
+       public function getGroupsByAdminId($adminId)
+       {
+           return Group::where('admin_id', $adminId)->get();
+       }
+
 }

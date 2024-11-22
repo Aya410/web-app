@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('state')->default(0);
+            $table->boolean('request_join')->nullable();
             $table->foreignId('group_id')->constrained('groups')->onDelete('cascade');
             $table->timestamps();
         });

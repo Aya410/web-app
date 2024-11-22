@@ -17,6 +17,7 @@ class group_user extends Model
         'user_id',
         'group_id',
         'request_join',
+        
     ];
     public function group()
     {

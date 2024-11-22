@@ -43,25 +43,14 @@ class GroupRepository
             });
     }
     
-    
-
-    public function createFile(array $data)
-    {
-        return File::create($data);
-    }
-
-    public function createVersion(array $data)
-    {
-        return Version::create($data);
-    }
-
+  /*  
 public function getFilesWithVersionsByGroupId(int $groupId)
 {
-    return File::where('group_id', $groupId)
+    return File::where('group_id', $groupId)->where('request_join',1)
         ->with(['versions' => function($query) {
-            $query->select('file', 'number', 'id', 'file_id');
+            $query->select('file', 'number', 'id', 'file_id')->where('number', 0);
         }])
-        ->select('id', 'name')  // Only select the 'id' and 'name' columns from the 'files' table
+        ->select('id', 'name')  
         ->get()
         ->map(function ($file) {
             // Map over the versions to generate full URLs
@@ -75,6 +64,31 @@ public function getFilesWithVersionsByGroupId(int $groupId)
 
             return $file;
         });
+}
+*/
+public function getFilesWithVersionsByGroupId(int $groupId)
+{
+    
+    $file = File::where('group_id', $groupId)
+        ->where('request_join', 1)
+        ->whereHas('versions') // Include only files with at least one version
+        ->select('id', 'name') // Select only the necessary fields
+        ->with(['versions' => function ($query) {
+            $query->select('id', 'file_id', 'file', 'number') // Select required version fields
+                ->orderBy('number', 'desc') // Fetch the latest version
+                ->take(1); // Limit to one version
+        }])
+        ->first(); // Fetch only one file
+
+    // If a file is found, process the latest version
+    if ($file && $file->versions->isNotEmpty()) {
+        $latestVersion = $file->versions->first();
+        $latestVersion->file = $latestVersion->file ? url($latestVersion->file) : null;
+        $file->latest_version = $latestVersion; 
+        unset($file->versions); 
+    }
+
+    return $file;
 }
 
 
@@ -156,4 +170,57 @@ public function getFilesWithVersionsByGroupId(int $groupId)
                 ];
             });
     }
+
+
+
+
+
+    public function getByFileIduser($fileId)
+    {
+        return Version::select([
+                'versions.id',
+                'versions.file_id',
+                'versions.number',
+                'versions.time',
+                'versions.file',
+                'versions.created_at',
+                
+            ])
+           
+            ->where('versions.file_id', $fileId)
+            ->get()
+            ->map(function ($version) {
+                return [
+                    'id' => $version->id,
+                    'file_id' => $version->file_id,
+                    'number' => $version->number,
+                    'time' => $version->time, // Already a datetime
+                    'file' => url($version->file), 
+                    'created_date' => $version->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+    }
+
+
+    public function fetchFilesByGroupId($groupId)
+    {
+        return File::where('group_id', $groupId)
+            ->where('request_join', 1)
+            ->with(['versions' => function ($query) {
+                $query->select('id', 'file_id', 'number', 'file')
+                      ->orderBy('number', 'desc');
+            }])
+            ->get()
+            ->map(function ($file) {
+                $file->versions = $file->versions->map(function ($version) {
+                    if ($version->file) {
+                        $version->file = url($version->file);
+                    }
+                    return $version;
+                });
+    
+                return $file;
+            });
+    }
+
 }

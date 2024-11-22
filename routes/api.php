@@ -5,6 +5,8 @@ use App\Http\Middleware\CheckUser;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,21 +37,77 @@ Route::group([
 
 
 
-
-    Route::post('/store_group', [GroupController::class, 'store']);
-
+Route::middleware('check_user')->group(function () {
+  
     Route::get('/getMyGroups', [GroupController::class, 'getMyGroups']);
 
-    Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
-
-
-    Route::post('/store_file', [GroupController::class, 'store_file']);
-
-    Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
 
     Route::post('/getPendingGroupsForAuthUser', [GroupController::class, 'getPendingGroupsForAuthUser']);
     Route::post('/updateRequestJoin', [GroupController::class, 'updateRequestJoin']);
-    Route::post('/getFileVersions', [GroupController::class, 'getFileVersions']);
+
+    Route::post('/getFileVersionsforuser', [GroupController::class, 'getFileVersions']);
+
+    Route::post('/upload', [FileController::class, 'uploadFile']); 
+
+    Route::post('/getFileVersionsuser', [GroupController::class, 'getFileVersionsuser']);
+});
+
+
+
+Route::middleware(['check_groupadmin', 'check_user'])->group(function () {
+  
+
+    
+Route::post('/store_group', [GroupController::class, 'store']);
+
+    
+    Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
+
+    
+    Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
+});
+
+
+
+
+Route::middleware('check_groupadmin')->group(function () {
+  
+    Route::post('/getFileVersionsforadmin', [GroupController::class, 'getFileVersions']);
+    
+    Route::get('/getGroupsforadmin', [GroupController::class, 'getGroups']);
+ 
+    Route::post('/uploadFileadmin', [GroupController::class, 'uploadFileadmin']);   
+
+    Route::post('/search', [UserController::class, 'searchUser']);
+
+
+  
+    Route::get('/pending', [FileController::class, 'getPendingFiles']);    
+
+    Route::post('/response', [FileController::class, 'handleAdminResponse']); 
+
+
+    Route::post('/getUsersByGroupId', [UserController::class, 'getUsersByGroupId']);
+
+
+
+    
+
+Route::post('/getallFiles', [FileController::class, 'getallFiles']); 
+
+
+
+    
+
+Route::post('/deleteFile', [FileController::class, 'deleteFile']); 
+
+
+
+
+
+
+});
+
 
 
 

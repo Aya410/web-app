@@ -5,92 +5,99 @@ namespace App\Services;
 use App\Repositories\GroupRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-
+use App\Repositories\FileRepository;
+use App\Events\FileUploadPendingApproval; 
 class FileService
 {
     protected $fileRepository;
+    protected $fileRepo;
 
-    public function __construct(GroupRepository $fileRepository)
+
+    public function __construct(GroupRepository $fileRepository,FileRepository $fileRepo)
     {
         $this->fileRepository = $fileRepository;
-    }
+        $this->fileRepo = $fileRepo;
 
-    public function uploadFile($file, int $groupId)
+    }
+private function handleFileUpload($file, int $groupId, $requestJoin = null)
 {
-    // Check if the file is provided
+    $fileExtension = $file->getClientOriginalExtension();
+    $fileName = time() . '.' . $fileExtension;
+    $filePath = 'files';
+    $file->move(public_path($filePath), $fileName);
+
+    $relativePath = $filePath . '/' . $fileName;
+
+    // Create File record
+    $fileData = [
+        'name' => $file->getClientOriginalName(),
+        'state' => 0, // Default state
+        'request_join' => $requestJoin,
+        'group_id' => $groupId,
+    ];
+    $fileRecord = $this->fileRepo->createFile($fileData);
+
+    // Create Version record
+    $versionData = [
+        'time' => now(),
+        'number' => 0,
+        'file' => $relativePath,
+        'user_id' => Auth::id(),
+        'file_id' => $fileRecord->id,
+    ];
+    $this->fileRepo->createVersion($versionData);
+
+    return $fileRecord;
+}
+public function uploadFileadmin($file, int $groupId)
+{
     if ($file) {
-        // Get the file extension
-        $fileExtension = $file->getClientOriginalExtension();
-        
-        // Generate a unique file name using the current timestamp
-        $fileName = time() . '.' . $fileExtension;
-
-        // Define the path where the file will be stored
-        $filePath = 'files';  // Directory in the public folder
-
-        // Move the file to the 'public/picture_files' directory
-        $file->move(public_path($filePath), $fileName);
-
-        // Save the relative file path in the database
-        $relativePath = $filePath . '/' . $fileName;
-
-        // Generate the full URL for the file
-        $fullUrl = url($relativePath);  // Full URL like http://yourdomain.com/picture_files/your-file.jpg
-
-        // Create the File record
-        $fileData = [
-            'name' => $file->getClientOriginalName(),
-            'state' => 0, // Initial state (you can customize this)
-            'group_id' => $groupId,
-            'path' => $fullUrl,  // Store the full URL in the database
-        ];
-        $fileRecord = $this->fileRepository->createFile($fileData);
-
-        // Create the first Version record (you can customize versioning logic)
-        $versionData = [
-            'time' => now(),  // Store the current date and time (YYYY-MM-DD HH:MM:SS)
-            'number' => 0, // Initial version number
-            'file' => $relativePath,  // Store the relative path
-            'user_id' => Auth::id(),
-            'file_id' => $fileRecord->id,
-        ];
-        $this->fileRepository->createVersion($versionData);
-
-        // Return the file record
-        return $fileRecord;
+        return $this->handleFileUpload($file, $groupId, $requestJoin = 1);
     }
-
-    // Return null or throw an exception if no file is uploaded
     return null;
 }
 
-/*
-    public function uploadFile($file, int $groupId)
+public function uploadFile($file, int $groupId)
+{
+    if ($file) {
+        $fileRecord = $this->handleFileUpload($file, $groupId);
+        
+        // Fire event for admin approval
+        event(new FileUploadPendingApproval($fileRecord));
+
+        return $fileRecord;
+    }
+    return null;
+}
+
+    public function getPendingFiles()
     {
-        // Store the file and retrieve the file path
-        $filePath = $file->store('uploads', 'public');
+        // Retrieve files with state = 0 (Pending)
+        return $this->fileRepo->getFilesByState(NULL);
+    }
 
-        // Create the File record
-        $fileData = [
-            'name' => $file->getClientOriginalName(),
-            'state' => 0,
-            'group_id' => $groupId,
-        ];
-        $file = $this->fileRepository->createFile($fileData);
+    public function handleAdminResponse(int $fileId, bool $isApproved)
+    {
+        $fileRecord = $this->fileRepo->find($fileId);
 
-        // Create the first Version record
-        $versionData = [
-            'time' => now()->toTimeString(),
-            'number' => 0, // Initial version number
-            'file' => $filePath,
-            'user_id' => Auth::id(),
-            'file_id' => $file->id,
-        ];
-        $this->fileRepository->createVersion($versionData);
+        if (!$fileRecord) {
+            return 'File not found.';
+        }
 
-        return $file;
-    }*/
-    public function getFilesWithVersionsByGroupId($groupId)
+        if (($isApproved)==(1)) {
+            // Approve the file
+            $this->fileRepo->update($fileRecord->id, ['request_join' => 1]);
+            return 'File approved and finalized.';
+        }
+    else{
+
+    
+        $this->fileRepo->delete($fileRecord->id);
+
+        return 'File rejected and deleted.';
+}
+    }
+   public function getFilesWithVersionsByGroupId($groupId)
     {
         return $this->fileRepository->getFilesWithVersionsByGroupId($groupId);
     }
@@ -100,6 +107,20 @@ class FileService
     {
         return $this->fileRepository->getByFileId($fileId);
     }
-    
+    public function getFileVersionsuser($fileId)
+    {
+        return $this->fileRepository->getByFileIduser($fileId);
+    }
+
+    public function getFiles($groupId)
+{
+    return $this->fileRepository->fetchFilesByGroupId($groupId);
+}
+
+
+public function deleteFileAndVersions(int $fileId): bool
+{
+    return $this->fileRepo->deleteFileAndVersions($fileId);
+}
 
 }

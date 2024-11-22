@@ -18,7 +18,14 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        \App\Events\FileUploadPendingApproval::class => [
+            \App\Listeners\FileUploadApprovalListener::class,
+        ],
+           
+    
     ];
+ 
+    
 
     /**
      * Register any events for your application.

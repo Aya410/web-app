@@ -29,18 +29,14 @@ class GroupController extends Controller
 
  public function store(GroupRequest $request)
  {
-     // Get the validated data from the request
  $validatedData = $request->validated();
 
- // Create the group using the validated data
  $group = $this->groupService->createGroup($validatedData);
 
- // Add users to the group
  if (isset($validatedData['user_ids'])) {
          $this->groupService->addUsersToGroup($group->id, $validatedData['user_ids']);
  }
 
- // Return the created group as a response with a status code of 201 (Created)
  return response()->json($group, 201);
  }
 
@@ -57,14 +53,14 @@ class GroupController extends Controller
  return response()->json($groups, 200);
  }
 
- public function store_file(FileUploadRequest $request)
+ public function uploadFileadmin(FileUploadRequest $request)
  {
      // Retrieve validated data
  $groupId = $request->input('group_id');
  $file = $request->file('file');
 
  // Upload file and create version
- $createdFile = $this->fileService->uploadFile($file, $groupId);
+ $createdFile = $this->fileService->uploadFileadmin($file, $groupId);
 
  return response()->json([
          'message' => 'File uploaded successfully',
@@ -113,6 +109,25 @@ public function getFileVersions(GetFileVersionsRequest $request)
     return response()->json($versions);
 }
 
+public function getFileVersionsuser(GetFileVersionsRequest $request)
+{
+    $fileId = $request->input('file_id');
+    $versions = $this->fileService->getFileVersionsuser($fileId);
+    return response()->json($versions);
+}
 
+
+    // Method to get group names based on authenticated admin's ID
+    public function getGroups()
+    {
+        // Get authenticated admin's ID
+        $adminId = Auth::id(); // Assuming you are using Laravel's built-in authentication
+        
+        // Get group names for this admin
+        $groupNames = $this->groupService->getGroupNamesByAdminId($adminId);
+
+        // Return the group names in a response
+        return response()->json($groupNames);
+    }
 
 }

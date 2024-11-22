@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "9ed146f7-5384-4231-aef6-cc8f9d4a6a41",
+		"name": "source safe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/user/register?name=amera&email=amera3993@gmail.com&password=12345678",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user",
+								"register"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "amera"
+								},
+								{
+									"key": "email",
+									"value": "amera3993@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "12345678"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/user/login?email=amera3993@gmail.com&password=12345678",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "amera3993@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "12345678"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/user/logout?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvdXNlci9sb2dpbiIsImlhdCI6MTczMDkxMTcwMSwiZXhwIjoxNzMwOTE1MzAxLCJuYmYiOjE3MzA5MTE3MDEsImp0aSI6IjlmNTJRd1FPY2hvNWJMSE8iLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.zy_wmrvOUj6D0thwbfkDRzM3WLCWagzNBeeDlc4UAPs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user",
+								"logout"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvdXNlci9sb2dpbiIsImlhdCI6MTczMDkxMTcwMSwiZXhwIjoxNzMwOTE1MzAxLCJuYmYiOjE3MzA5MTE3MDEsImp0aSI6IjlmNTJRd1FPY2hvNWJMSE8iLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.zy_wmrvOUj6D0thwbfkDRzM3WLCWagzNBeeDlc4UAPs"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store_group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvdXNlci9sb2dpbiIsImlhdCI6MTczMTAxNzAwNiwiZXhwIjoxNzMxMDIwNjA2LCJuYmYiOjE3MzEwMTcwMDYsImp0aSI6IlJQYjF1T2cwQUFMWFJQbzciLCJzdWIiOiIxIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.BfzNdJRH11vWKj3qV3T87SMAJr1LNRCy24arHft5VEM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "girls",
+									"type": "default"
+								},
+								{
+									"key": "description",
+									"value": "this group for fun ",
+									"type": "default"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/C:/Users/DELL/Pictures/my life/IMG-20230916-WA0003.jpg"
+								},
+								{
+									"key": "admin_id",
+									"value": "1",
+									"type": "default",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/user/store_group",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user",
+								"store_group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "showAllUsers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvdXNlci9sb2dpbiIsImlhdCI6MTczMTA4MDkwNCwiZXhwIjoxNzMxMDg0NTA0LCJuYmYiOjE3MzEwODA5MDQsImp0aSI6IkZMdldEbjZDMkw4T3FIV2YiLCJzdWIiOiIyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.rJEYkslZnroqBNUb8Gi2srcCw1PWpOk31hnm5-UjPmA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/user/showAllUsers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"user",
+								"showAllUsers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "platform admin",
+			"item": [
+				{
+					"name": "admin register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/plat_admin/pregister?name=ahmad&email=ahmad@gmail.com&password=1234567890",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"plat_admin",
+								"pregister"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "ahmad"
+								},
+								{
+									"key": "email",
+									"value": "ahmad@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "1234567890"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin log in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/plat_admin/plogin?email=ahmad@gmail.com&password=1234567890",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"plat_admin",
+								"plogin"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "ahmad@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "1234567890"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/plat_admin/plogout?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcGxhdF9hZG1pbi9wbG9naW4iLCJpYXQiOjE3MzA5MjQ4OTksImV4cCI6MTczMDkyODQ5OSwibmJmIjoxNzMwOTI0ODk5LCJqdGkiOiJTbmNZaXRWUzJsOHFpVUtkIiwic3ViIjoiMSIsInBydiI6ImRlYTYyZGM0MGFiNjViZDc0MDdjMTIzZjFkOGY4OThmOWI2ZjNkNDQifQ.mntQ12xptfVJbcwak0yy6v_6ZlY98tbpVubjXUVMZWw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"plat_admin",
+								"plogout"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvcGxhdF9hZG1pbi9wbG9naW4iLCJpYXQiOjE3MzA5MjQ4OTksImV4cCI6MTczMDkyODQ5OSwibmJmIjoxNzMwOTI0ODk5LCJqdGkiOiJTbmNZaXRWUzJsOHFpVUtkIiwic3ViIjoiMSIsInBydiI6ImRlYTYyZGM0MGFiNjViZDc0MDdjMTIzZjFkOGY4OThmOWI2ZjNkNDQifQ.mntQ12xptfVJbcwak0yy6v_6ZlY98tbpVubjXUVMZWw"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://127.0.0.1:8000/api"
+		}
+	]
+}

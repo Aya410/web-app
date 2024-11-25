@@ -50,13 +50,7 @@ Route::middleware('check_user')->group(function () {
     Route::post('/upload', [FileController::class, 'uploadFile']); 
 
     Route::post('/getFileVersionsuser', [GroupController::class, 'getFileVersionsuser']);
-});
-
-
-
-Route::middleware(['check_groupadmin', 'check_user'])->group(function () {
-  
-
+    
     
 Route::post('/store_group', [GroupController::class, 'store']);
 
@@ -66,6 +60,8 @@ Route::post('/store_group', [GroupController::class, 'store']);
     
     Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
 });
+
+
 
 
 

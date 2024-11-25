@@ -174,7 +174,7 @@ public function getFilesWithVersionsByGroupId(int $groupId)
 
 
 
-
+/*
     public function getByFileIduser($fileId)
     {
         return Version::select([
@@ -201,6 +201,33 @@ public function getFilesWithVersionsByGroupId(int $groupId)
             });
     }
 
+*/
+public function getByFileIduser($fileId)
+{
+    return Version::select([
+            'versions.id',
+            'versions.file_id',
+            'versions.number',
+            'versions.time',
+            'versions.file',
+            'versions.created_at',
+            'files.name as file_name', // Include file name
+        ])
+        ->join('files', 'files.id', '=', 'versions.file_id') // Join with the files table
+        ->where('versions.file_id', $fileId)
+        ->get()
+        ->map(function ($version) {
+            return [
+                'id' => $version->id,
+                'file_id' => $version->file_id,
+                'file_name' => $version->file_name, // Add file name to the output
+                'number' => $version->number,
+                'time' => $version->time, // Already a datetime
+                'file' => url($version->file),
+                'created_date' => $version->created_at->format('Y-m-d H:i:s'),
+            ];
+        });
+}
 
     public function fetchFilesByGroupId($groupId)
     {

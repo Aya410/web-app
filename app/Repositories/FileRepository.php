@@ -12,13 +12,23 @@ class FileRepository
     }
 
   
-
+/*
     public function getFilesByState(null $request_join)
     {
         return File::where('request_join', $request_join)->get();
     }
     
     
+*/
+public function getFilesByState($request_join)
+{
+    // Handle NULL or specific values
+    return File::when($request_join === NULL, function ($query) {
+        return $query->whereNull('request_join');
+    }, function ($query) use ($request_join) {
+        return $query->where('request_join', $request_join);
+    })->get();
+}
 
 
     public function createVersion(array $data)
@@ -28,12 +38,6 @@ class FileRepository
 
 
     
-       // Fetch groups created by the admin (matching admin_id)
-       public function getGroupsByAdminId($adminId)
-       {
-           return Group::where('admin_id', $adminId)->get();
-       }
-
        
     public function createFile(array $data)
     {

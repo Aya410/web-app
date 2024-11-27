@@ -123,4 +123,10 @@ public function deleteFileAndVersions(int $fileId): bool
     return $this->fileRepo->deleteFileAndVersions($fileId);
 }
 
+
+public function getHistoryUser($userId, $groupId)
+{
+    // Call the repository to retrieve files and their versions
+    return $this->fileRepo->getHistoryUser($userId, $groupId);
+}
 }

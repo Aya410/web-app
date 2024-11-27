@@ -8,6 +8,7 @@ use App\Http\Requests\FileUploadRequest;
 use App\Http\Requests\ResponseRequest;
 use App\Http\Requests\GetFileVersionsRequest;
 use App\Http\Requests\UsergroupRequest;
+use App\Http\Requests\FileRequest;
 class FileController extends Controller
 {
     
@@ -75,4 +76,19 @@ class FileController extends Controller
             return response()->json(['error' => 'File not found or could not be deleted.'], 404);
         }
     }
+
+
+
+    public function getHistory(FileRequest $request)
+    {
+        $userId = auth()->id(); // Get the authenticated user's ID
+        $groupId = $request->input('group_id'); // Get group_id from the request
+
+        // Call the service to get files and their versions
+        $files = $this->fileService->getHistoryUser($userId, $groupId);
+
+        return response()->json($files);
+    }
+
+    
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use App\Http\Controllers\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,6 +61,10 @@ Route::post('/store_group', [GroupController::class, 'store']);
 
     
     Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
+    
+    Route::post('/getHistory', [FileController::class, 'getHistory']); 
+
+    
 });
 
 
@@ -104,7 +110,7 @@ Route::post('/deleteFile', [FileController::class, 'deleteFile']);
 
 });
 
-
+Route::post('/send-notification', [NotificationController::class, 'sendTestNotification']);
 
 
 

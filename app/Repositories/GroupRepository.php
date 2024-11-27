@@ -43,29 +43,33 @@ class GroupRepository
             });
     }
     
-  /*  
-public function getFilesWithVersionsByGroupId(int $groupId)
-{
-    return File::where('group_id', $groupId)->where('request_join',1)
-        ->with(['versions' => function($query) {
-            $query->select('file', 'number', 'id', 'file_id')->where('number', 0);
-        }])
-        ->select('id', 'name')  
-        ->get()
-        ->map(function ($file) {
-            // Map over the versions to generate full URLs
-            $file->versions = $file->versions->map(function ($version) {
-                if ($version->file) {
-                    // Use the full URL for the file, assuming it's stored publicly in the 'files' folder
-                    $version->file = url( $version->file);
-                }
-                return $version;
-            });
+    public function getFilesWithVersionsByGroupId(int $groupId)
+    {
+        
+        $files = File::where('group_id', $groupId)
+            ->where('request_join', 1)
+            ->select('id', 'name')  
+            ->with(['versions' => function ($query) {
+                $query->select('id', 'file_id', 'file', 'number') 
+                    ->orderBy('number', 'desc'); 
+            }])
+            ->get();
 
-            return $file;
+        $files->each(function ($file) {
+            if ($file->versions->isNotEmpty()) {
+                $latestVersion = $file->versions->first(); 
+                $latestVersion->file = $latestVersion->file ? url($latestVersion->file) : null; 
+                $file->latest_version = $latestVersion; 
+            } else {
+                $file->latest_version = null;  
+            }
+            unset($file->versions); 
         });
-}
-*/
+    
+        return $files;  
+    }
+    
+  /*
 public function getFilesWithVersionsByGroupId(int $groupId)
 {
     
@@ -89,7 +93,7 @@ public function getFilesWithVersionsByGroupId(int $groupId)
     }
 
     return $file;
-}
+}*/
 
 
     public function getPendingGroupsForUser($userId)
@@ -138,10 +142,6 @@ public function getFilesWithVersionsByGroupId(int $groupId)
         return $groupUser; 
     }
 
-
-
-
-
  public function getByFileId($fileId)
     {
         return Version::select([
@@ -153,8 +153,10 @@ public function getFilesWithVersionsByGroupId(int $groupId)
                 'versions.file',
                 'versions.created_at',
                 'users.name as user_name', // Include user name
+                'files.name as file_name',
             ])
-            ->join('users', 'users.id', '=', 'versions.user_id') // Join with the users table
+            ->join('users', 'users.id', '=', 'versions.user_id')
+            ->join('files', 'files.id', '=', 'versions.file_id') 
             ->where('versions.file_id', $fileId)
             ->get()
             ->map(function ($version) {
@@ -165,43 +167,13 @@ public function getFilesWithVersionsByGroupId(int $groupId)
                     'number' => $version->number,
                     'time' => $version->time, // Already a datetime
                     'file' => url($version->file), 
+                    'file_name' => $version->file_name,
                     'user_name' => $version->user_name,
                     'created_date' => $version->created_at->format('Y-m-d H:i:s'),
                 ];
             });
     }
 
-
-
-
-/*
-    public function getByFileIduser($fileId)
-    {
-        return Version::select([
-                'versions.id',
-                'versions.file_id',
-                'versions.number',
-                'versions.time',
-                'versions.file',
-                'versions.created_at',
-                
-            ])
-           
-            ->where('versions.file_id', $fileId)
-            ->get()
-            ->map(function ($version) {
-                return [
-                    'id' => $version->id,
-                    'file_id' => $version->file_id,
-                    'number' => $version->number,
-                    'time' => $version->time, // Already a datetime
-                    'file' => url($version->file), 
-                    'created_date' => $version->created_at->format('Y-m-d H:i:s'),
-                ];
-            });
-    }
-
-*/
 public function getByFileIduser($fileId)
 {
     return Version::select([

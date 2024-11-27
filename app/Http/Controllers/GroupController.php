@@ -120,13 +120,12 @@ public function getFileVersionsuser(GetFileVersionsRequest $request)
     // Method to get group names based on authenticated admin's ID
     public function getGroups()
     {
-        // Get authenticated admin's ID
-        $adminId = Auth::id(); // Assuming you are using Laravel's built-in authentication
+       
+        $adminId = Auth::id();
         
-        // Get group names for this admin
+
         $groupNames = $this->groupService->getGroupNamesByAdminId($adminId);
 
-        // Return the group names in a response
         return response()->json($groupNames);
     }
 

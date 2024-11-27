@@ -103,7 +103,7 @@ public function createGroup(array $data)
      $groups = $this->groupRepository->getGroupsByAdminId($adminId);
 
      
-     return $groups->pluck('name');
+     return $groups;
  }
 
 }    

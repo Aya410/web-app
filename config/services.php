@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'fcm' => [
+        'credentialsPath'  => storage_path('source-safe-project-firebase-adminsdk-3zr8v-1535e29eb9.json'),
+        'project_id' => env('FIREBASE_PROJECT_ID'),     
+    ],
+
 ];

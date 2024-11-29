@@ -19,8 +19,69 @@ class FileService
         $this->fileRepo = $fileRepo;
 
     }
+
+    
+    public function handleFileUpload($file, int $groupId, $requestJoin = null)
+    {
+        // Check if a file with the same group_id and name already exists
+        $existingFile = $this->fileRepo->findByGroupAndName($groupId, $file->getClientOriginalName());
+    
+        if ($existingFile) {
+            // Return a response with a message indicating the file already exists
+            return [
+                'status' => 'error',
+                'message' => 'File with the same name already exists.',
+                'existing_file' => $existingFile
+            ]; // Return array to be handled in controller
+        }
+    
+        // Proceed with file upload if no matching file is found
+        $fileExtension = $file->getClientOriginalExtension();
+        $fileName = time() . '.' . $fileExtension;
+        $filePath = 'files';
+        $file->move(public_path($filePath), $fileName);
+    
+        $relativePath = $filePath . '/' . $fileName;
+    
+        // Create File record
+        $fileData = [
+            'name' => $file->getClientOriginalName(),
+            'state' => 0, // Default state
+            'request_join' => $requestJoin,
+            'group_id' => $groupId,
+        ];
+        $fileRecord = $this->fileRepo->createFile($fileData);
+    
+        // Create Version record
+        $versionData = [
+            'time' => now(),
+            'number' => 0,
+            'file' => $relativePath,
+            'user_id' => Auth::id(),
+            'file_id' => $fileRecord->id,
+        ];
+        $this->fileRepo->createVersion($versionData);
+    
+        // Return success response with file record
+        return [
+            'status' => 'success',
+            'message' => 'File uploaded successfully.',
+            'file' => $fileRecord
+        ];
+    }
+    
+/*
 private function handleFileUpload($file, int $groupId, $requestJoin = null)
 {
+    // Check if a file with the same group_id and name already exists
+    $existingFile = $this->fileRepo->findByGroupAndName($groupId, $file->getClientOriginalName());
+
+    if ($existingFile) {
+        // Return response with message and data
+    
+       return $existingFile;
+    }
+    // Proceed with file upload if no match found
     $fileExtension = $file->getClientOriginalExtension();
     $fileName = time() . '.' . $fileExtension;
     $filePath = 'files';
@@ -49,6 +110,9 @@ private function handleFileUpload($file, int $groupId, $requestJoin = null)
 
     return $fileRecord;
 }
+
+*/
+
 public function uploadFileadmin($file, int $groupId)
 {
     if ($file) {

@@ -27,18 +27,42 @@ class GroupController extends Controller
  $this->fileService = $fileService;
  }
 
+/*
  public function store(GroupRequest $request)
- {
- $validatedData = $request->validated();
+{
+    $validatedData = $request->validated();
+    $token = $request->input('token');  // Get the shared token from the request
 
- $group = $this->groupService->createGroup($validatedData);
+    $group = $this->groupService->createGroup($validatedData, $token);
 
- if (isset($validatedData['user_ids'])) {
-         $this->groupService->addUsersToGroup($group->id, $validatedData['user_ids']);
- }
+    if (isset($validatedData['user_ids'])) {
+        $this->groupService->addUsersToGroup($group->id, $validatedData['user_ids']);
+    }
 
- return response()->json($group, 201);
- }
+    return response()->json($group, 201);
+}
+*/
+
+
+public function store(GroupRequest $request)
+{
+    $validatedData = $request->validated();
+    $token = $request->input('token');  // Get the shared token from the request
+
+    // Call the service method to create the group and send notifications
+    $results = $this->groupService->createGroup($validatedData, $token);
+
+    // If user_ids are provided, add them to the group
+    if (isset($validatedData['user_ids'])) {
+        $this->groupService->addUsersToGroup($results['group']->id, $validatedData['user_ids']);
+    }
+
+    // Return the response with group and notification results
+    return response()->json([
+        'group' => $results['group'],  // Group data
+        'notification_results' => $results['notification_results']  // Notification results
+    ], 201);
+}
 
  // Show all users for admin group to select
  public function showAllUsers()
@@ -52,22 +76,6 @@ class GroupController extends Controller
      $groups = $this->groupService->getRequestedGroupsForUser();
  return response()->json($groups, 200);
  }
-
- public function uploadFileadmin(FileUploadRequest $request)
- {
-     // Retrieve validated data
- $groupId = $request->input('group_id');
- $file = $request->file('file');
-
- // Upload file and create version
- $createdFile = $this->fileService->uploadFileadmin($file, $groupId);
-
- return response()->json([
-         'message' => 'File uploaded successfully',
- 'file' => $createdFile,
- ], 201);
- }
-
  public function getFilesByGroupId(FileRequest $request)
  {
      // Retrieve the validated group_id

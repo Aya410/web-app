@@ -10,25 +10,14 @@ class FileRepository
     {
         return File::create($data);
     }
-
+    public function findByGroupAndName(int $groupId, string $name)
+    {
+        return File::where('group_id', $groupId)
+                   ->where('name', $name)
+                   ->first();
+    }
+    
   
-/*
-public function getFilesByState($request_join)
-{
-    return File::when($request_join === null, function ($query) {
-        return $query->whereNull('request_join');
-    }, function ($query) use ($request_join) {
-        return $query->where('request_join', $request_join);
-    })->with(['versions.user:id,name']) // Eager load user names via Version
-      ->get()
-      ->map(function ($file) {
-          // Add a user_names attribute with only user names
-          $file->user_names = $file->versions->pluck('user.name')->unique()->values();
-          unset($file->versions); // Optionally remove versions if not needed
-          return $file;
-      });
-}
-*/
 public function getFilesByState($request_join)
 {
     return File::when($request_join === null, function ($query) {

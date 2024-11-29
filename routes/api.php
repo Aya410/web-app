@@ -78,7 +78,7 @@ Route::middleware('check_groupadmin')->group(function () {
     
     Route::get('/getGroupsforadmin', [GroupController::class, 'getGroups']);
  
-    Route::post('/uploadFileadmin', [GroupController::class, 'uploadFileadmin']);   
+    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);   
 
     Route::post('/search', [UserController::class, 'searchUser']);
 

@@ -7,6 +7,11 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use App\Events\BeforeNotificationSent;
+use App\Events\AfterNotificationSent;
+use App\Listeners\BeforeNotificationListener;
+use App\Listeners\AfterNotificationListener;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -21,12 +26,15 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\FileUploadPendingApproval::class => [
             \App\Listeners\FileUploadApprovalListener::class,
         ],
-           
+        BeforeNotificationSent::class => [
+            BeforeNotificationListener::class,
+        ],
+        AfterNotificationSent::class => [
+            AfterNotificationListener::class,
+        ], 
     
     ];
  
-    
-
     /**
      * Register any events for your application.
      */

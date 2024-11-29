@@ -18,7 +18,7 @@ class FileController extends Controller
     {
         $this->fileService = $fileService;
     }
-
+/*
     public function uploadFile(FileUploadRequest $request)
     {
         $file = $request->file('file');
@@ -30,8 +30,61 @@ class FileController extends Controller
 
         $result = $this->fileService->uploadFile($file, $groupId);
 
-        return response()->json(['message' => 'File uploaded successfully.', 'data' => $result]);
+        return response()->json([ 'data' => $result]);
     }
+    */
+    public function uploadFileadmin(FileUploadRequest $request)
+{
+    // Retrieve validated data
+    $groupId = $request->input('group_id');
+    $file = $request->file('file');
+
+    // Upload file and create version
+    $result = $this->fileService->uploadFileadmin($file, $groupId);
+
+    // Check if the result is an array and has 'status'
+    if (isset($result['status']) && $result['status'] == 'error') {
+        return response()->json([
+            'message' => $result['message'],
+            'existing_file' => $result['existing_file']
+        ], 409); // 409 Conflict HTTP status code
+    }
+
+    // If the status is success, return the file data
+    return response()->json([
+        'message' => $result['message'],
+        'file' => $result['file']
+    ]);
+}
+
+
+
+    public function uploadFile(FileUploadRequest $request)
+{
+    $file = $request->file('file');
+    $groupId = $request->input('group_id');
+
+    if (!$file || !$groupId) {
+        return response()->json(['message' => 'File or group_id is missing.'], 400);
+    }
+
+    // Call the service to handle the file upload
+    $result = $this->fileService->handleFileUpload($file, $groupId);
+
+    // Check the status of the response and return appropriate JSON
+    if ($result['status'] == 'error') {
+        return response()->json([
+            'message' => $result['message'],
+            'existing_file' => $result['existing_file']
+        ], 409); // 409 Conflict HTTP status code
+    }
+
+    // If the status is success, return the file data
+    return response()->json([
+        'message' => $result['message'],
+        'file' => $result['file']
+    ]);
+}
 
     public function getPendingFiles()
     {

@@ -32,7 +32,7 @@ return [
     ],
 
     'fcm' => [
-        'credentialsPath'  => storage_path('source-safe-project-firebase-adminsdk-3zr8v-1535e29eb9.json'),
+        'credentialsPath'  => storage_path('source-safe-project-firebase-adminsdk-3zr8v-6bf98f87bf.json'),
         'project_id' => env('FIREBASE_PROJECT_ID'),     
     ],
 

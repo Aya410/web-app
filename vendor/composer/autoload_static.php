@@ -165,6 +165,7 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
         array (
             'Dotenv\\' => 7,
             'Doctrine\\Inflector\\' => 19,
+            'Doctrine\\Deprecations\\' => 22,
             'Doctrine\\Common\\Lexer\\' => 22,
             'Dflydev\\DotAccessData\\' => 22,
             'DeepCopy\\' => 9,
@@ -525,6 +526,10 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
         ),
+        'Doctrine\\Deprecations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations',
+        ),
         'Doctrine\\Common\\Lexer\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/lexer/src',
@@ -573,6 +578,8 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
     public static $classMap = array (
         'App\\Actions\\ElaborateSummary' => __DIR__ . '/..' . '/laravel/pint/app/Actions/ElaborateSummary.php',
         'App\\Actions\\FixCode' => __DIR__ . '/..' . '/laravel/pint/app/Actions/FixCode.php',
+        'App\\Aspects\\GroupAspect' => __DIR__ . '/../..' . '/app/Aspects/GroupAspect.php',
+        'App\\Aspects\\NotificationAspect' => __DIR__ . '/../..' . '/app/Aspects/NotificationAspect.php',
         'App\\Commands\\DefaultCommand' => __DIR__ . '/..' . '/laravel/pint/app/Commands/DefaultCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Contracts\\PathsRepository' => __DIR__ . '/..' . '/laravel/pint/app/Contracts/PathsRepository.php',
@@ -619,7 +626,6 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Version' => __DIR__ . '/../..' . '/app/Models/Version.php',
         'App\\Models\\group_user' => __DIR__ . '/../..' . '/app/Models/group_user.php',
-        'App\\Notifications\\FirebaseNotification' => __DIR__ . '/../..' . '/app/Notifications/FirebaseNotification.php',
         'App\\Output\\Concerns\\InteractsWithSymbols' => __DIR__ . '/..' . '/laravel/pint/app/Output/Concerns/InteractsWithSymbols.php',
         'App\\Output\\ProgressOutput' => __DIR__ . '/..' . '/laravel/pint/app/Output/ProgressOutput.php',
         'App\\Output\\SummaryOutput' => __DIR__ . '/..' . '/laravel/pint/app/Output/SummaryOutput.php',
@@ -639,8 +645,8 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
         'App\\Repositories\\GroupRepository' => __DIR__ . '/../..' . '/app/Repositories/GroupRepository.php',
         'App\\Repositories\\UserRepository' => __DIR__ . '/../..' . '/app/Repositories/UserRepository.php',
         'App\\Services\\AuthService' => __DIR__ . '/../..' . '/app/Services/AuthService.php',
+        'App\\Services\\FcmService' => __DIR__ . '/../..' . '/app/Services/FcmService.php',
         'App\\Services\\FileService' => __DIR__ . '/../..' . '/app/Services/FileService.php',
-        'App\\Services\\FirebaseService' => __DIR__ . '/../..' . '/app/Services/FirebaseService.php',
         'App\\Services\\GroupService' => __DIR__ . '/../..' . '/app/Services/GroupService.php',
         'App\\Services\\UserService' => __DIR__ . '/../..' . '/app/Services/UserService.php',
         'App\\ValueObjects\\Issue' => __DIR__ . '/..' . '/laravel/pint/app/ValueObjects/Issue.php',
@@ -800,6 +806,8 @@ class ComposerStaticInit0bd1f96090e3c7def344656b516cd76c
         'Dflydev\\DotAccessData\\Util' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/Util.php',
         'Doctrine\\Common\\Lexer\\AbstractLexer' => __DIR__ . '/..' . '/doctrine/lexer/src/AbstractLexer.php',
         'Doctrine\\Common\\Lexer\\Token' => __DIR__ . '/..' . '/doctrine/lexer/src/Token.php',
+        'Doctrine\\Deprecations\\Deprecation' => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations/Deprecation.php',
+        'Doctrine\\Deprecations\\PHPUnit\\VerifyDeprecations' => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations/PHPUnit/VerifyDeprecations.php',
         'Doctrine\\Inflector\\CachedWordInflector' => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector/CachedWordInflector.php',
         'Doctrine\\Inflector\\GenericLanguageInflectorFactory' => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector/GenericLanguageInflectorFactory.php',
         'Doctrine\\Inflector\\Inflector' => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector/Inflector.php',

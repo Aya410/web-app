@@ -4,11 +4,12 @@ use Illuminate\Http\Request;
 use App\Http\Middleware\CheckUser;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\UserController;
-use Illuminate\Routing\Middleware\ThrottleRequests;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\OperationController;
 use App\Http\Controllers\NotificationController;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -40,7 +41,12 @@ Route::group([
 
 
 Route::middleware('check_user')->group(function () {
-  
+    Route::get('/showfilesforcheckout', [OperationController::class, 'showfilesforcheckout']);
+    Route::post('/checkout', [OperationController::class, 'checkout']);
+    Route::post('/checkin', [OperationController::class, 'checkin']);
+
+
+
     Route::get('/getMyGroups', [GroupController::class, 'getMyGroups']);
 
 
@@ -49,22 +55,22 @@ Route::middleware('check_user')->group(function () {
 
     Route::post('/getFileVersionsforuser', [GroupController::class, 'getFileVersions']);
 
-    Route::post('/upload', [FileController::class, 'uploadFile']); 
+    Route::post('/upload', [FileController::class, 'uploadFile']);
 
     Route::post('/getFileVersionsuser', [GroupController::class, 'getFileVersionsuser']);
-    
-    
+
+
 Route::post('/store_group', [GroupController::class, 'store']);
 
-    
+
     Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
 
-    
-    Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
-    
-    Route::post('/getHistory', [FileController::class, 'getHistory']); 
 
-    
+    Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
+
+    Route::post('/getHistory', [FileController::class, 'getHistory']);
+
+
 });
 
 
@@ -73,35 +79,35 @@ Route::post('/store_group', [GroupController::class, 'store']);
 
 
 Route::middleware('check_groupadmin')->group(function () {
-  
+
     Route::post('/getFileVersionsforadmin', [GroupController::class, 'getFileVersions']);
-    
+
     Route::get('/getGroupsforadmin', [GroupController::class, 'getGroups']);
  
-    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);   
+    Route::post('/uploadFileadmin', [GroupController::class, 'uploadFileadmin']);   
 
     Route::post('/search', [UserController::class, 'searchUser']);
 
 
-  
-    Route::get('/pending', [FileController::class, 'getPendingFiles']);    
 
-    Route::post('/response', [FileController::class, 'handleAdminResponse']); 
+    Route::get('/pending', [FileController::class, 'getPendingFiles']);
+
+    Route::post('/response', [FileController::class, 'handleAdminResponse']);
 
 
     Route::post('/getUsersByGroupId', [UserController::class, 'getUsersByGroupId']);
 
 
 
-    
-
-Route::post('/getallFiles', [FileController::class, 'getallFiles']); 
 
 
+Route::post('/getallFiles', [FileController::class, 'getallFiles']);
 
-    
 
-Route::post('/deleteFile', [FileController::class, 'deleteFile']); 
+
+
+
+Route::post('/deleteFile', [FileController::class, 'deleteFile']);
 
 
 

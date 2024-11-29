@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Services;
+use App\Models\File;
+use App\Models\Version;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CheckinRequest;
+use App\Repositories\CheckinRepository;
+
+class CheckinService{
+
+public function checkreserve($version_id, $user_id)
+{
+    try {
+        DB::beginTransaction();
+
+        $file = Version::with('file')->where('id', $version_id)->lockForUpdate()->first();
+        if (!$file) {
+            throw new \Exception('Version does not exist.');
+        }
+
+       $f= File::where('id',$file->file_id)->lockForUpdate()->first();
+
+        // if (!$f) {
+        //     throw new \Exception('No file associated with this version.');
+        // }
+
+        // if ($f->state) {
+        //     throw new \Exception('The file has been reserved by another user.');
+        // }
+
+        $f->state = true;
+        $file->reservedby = $user_id;
+        $f->save();
+        $file->save();
+
+        DB::commit();
+     //   return response()->json(['message' => 'The files have been reserved successfully'], 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => $e->getMessage()], 400);
+    }
+}
+
+
+public function checkin(CheckinRequest $request)
+{
+    try {
+        $user_id = Auth::id();
+        DB::beginTransaction();
+
+        foreach($request->id as $Id){
+            $f = Version::where('id', $Id)->first();
+          // $this->checkreserve($Id, $user_id);
+
+            if (!$f) {
+                throw new \Exception('Version not found.');
+            }
+
+            $s=File::where('id',$f->file_id)->first();
+
+            if (!$s instanceof \App\Models\File) {
+                throw new \Exception('No valid file associated with this version.');
+            }
+
+            if ($s->state) {
+                throw new \Exception('Chosen files have reserved files: ' . $s->name);
+            }
+        }
+
+        foreach($request->id as $Id){
+            $this->checkreserve($Id, $user_id);
+        }
+
+        DB::commit();
+        return response()->json(['message' => 'The files have been reserved successfully'], 200);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => $e->getMessage()], 400);
+    }
+}
+
+
+}

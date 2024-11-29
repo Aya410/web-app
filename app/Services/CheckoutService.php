@@ -23,9 +23,11 @@ class CheckoutService
     public function checkout(CheckoutRequest $request)
     {
         $user_id=Auth::id();
-        $file_id=$request->file_id;
+        $version_id=$request->version_id;
+        $version=Version::where('id',$version_id)->first();
+        $file_id=$version->file_id;
         $file=File::where('id',$file_id)->first();
-        $version=Version::where('file_id',$file_id)->first();
+
 
 
         $fileExtension = $request->file->getClientOriginalExtension();

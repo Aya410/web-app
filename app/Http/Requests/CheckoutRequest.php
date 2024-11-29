@@ -23,7 +23,7 @@ class CheckoutRequest extends FormRequest
     {
         return [
             'token'=>'required',
-            'file_id'=>'required',
+            'version_id'=>'required',
             'file'=>'required|file',
 
         ];

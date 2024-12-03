@@ -43,6 +43,9 @@ Route::middleware('check_superadmin')->group(function () {
     Route::get('/GetAllUsers', [SuperAdminController::class, 'GetAllUsers']);
     Route::get('/GetGroupsOfAUser/{id}', [SuperAdminController::class, 'GetGroupsOfAUser']);
     Route::get('/ShowUserFiles', [SuperAdminController::class, 'ShowUserFiles']);
+    Route::get('/ShowFilesOfAGroup/{id}', [SuperAdminController::class, 'ShowFilesOfAGroup']);
+
+
 });
 
 

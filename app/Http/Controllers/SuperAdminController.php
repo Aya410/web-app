@@ -37,6 +37,12 @@ class SuperAdminController extends Controller
    }
 
 
+   public function ShowFilesOfAGroup($id)
+   {
+      return $this->superadminrepo->ShowFilesOfAGroup($id);
+   }
+
+
 
 
 

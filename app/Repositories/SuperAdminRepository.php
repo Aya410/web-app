@@ -129,6 +129,7 @@ class SuperAdminRepository{
                       'version_id'=>$version->id,
                       'file_name' =>$file->name ,
                       'file_verion'=>$version->number,
+                      'version_path'=>$version->file,
                       'time' => $version->time,
                       'date' => $version->created_at,
                   ];
@@ -140,6 +141,13 @@ class SuperAdminRepository{
         return response()->json([$Info], 200);
     }
 
+
+    public function ShowFilesOfAGroup($id)
+    {
+        $group=Group::where('id',$id)->first();
+        $files=$group->files;
+        return response()->json(['All files of this group' => $files], 200);
+    }
 
 
 

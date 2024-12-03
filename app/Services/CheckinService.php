@@ -14,6 +14,7 @@ class CheckinService{
 
     public function checkin(CheckinRequest $request)
     {
+        //return response()->json(['this token authorized'], 400);
         try {
             $user_id = Auth::id();
             DB::beginTransaction();

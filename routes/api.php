@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\OperationController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SuperAdminController;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,13 @@ Route::group([
 
 
 //middleware name (check_user , check_groupadmin  , check_superadmin)
+Route::middleware('check_superadmin')->group(function () {
 
+    Route::get('/GetAllGroups', [SuperAdminController::class, 'GetAllGroups']);
+    Route::get('/GetAllUsers', [SuperAdminController::class, 'GetAllUsers']);
+    Route::get('/GetGroupsOfAUser/{id}', [SuperAdminController::class, 'GetGroupsOfAUser']);
+    Route::get('/ShowUserFiles', [SuperAdminController::class, 'ShowUserFiles']);
+});
 
 
 
@@ -83,8 +90,8 @@ Route::middleware('check_groupadmin')->group(function () {
     Route::post('/getFileVersionsforadmin', [GroupController::class, 'getFileVersions']);
 
     Route::get('/getGroupsforadmin', [GroupController::class, 'getGroups']);
- 
-    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);   
+
+    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);
 
     Route::post('/search', [UserController::class, 'searchUser']);
 

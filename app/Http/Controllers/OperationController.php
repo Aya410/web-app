@@ -9,6 +9,10 @@ use App\Http\Requests\CheckinRequest;
 use App\Http\Requests\CheckoutRequest;
 use App\Http\Requests\ShowCheckoutFilesRequest;
 
+use App\Events\BeforeNotificationSent;
+use App\Events\AfterNotificationSent;
+
+
 class OperationController extends Controller
 {
 
@@ -23,17 +27,37 @@ class OperationController extends Controller
 
     public function checkin(CheckinRequest $request)
     {
-       return $this->checkinservice->checkin($request);
+
+        $token = $request->input('token_device');  // Get the shared token from the request
+
+       return $this->checkinservice->checkin($request,$token);
 
     }
 
-
+/*
     public function checkout(CheckoutRequest $request)
     {
-       return $this->checkoutservice->checkout($request);
+        
+        $token = $request->input('token_device'); 
+       return $this->checkoutservice->checkout($request,$token);
 
     }
+*/
+public function checkout(CheckoutRequest $request)
+{
+    // Get the device token from the request
+    $token = $request->input('token_device');
 
+    // Call the checkout service to perform the checkout and get the notification results
+    $results = $this->checkoutservice->checkout($request, $token);
+
+    // Return the response with the checkout success and notification results
+    return response()->json([
+        'message' => $results['message'], // Success message from the checkout service
+      //  'newname' => $results['newname'], // New file name (if applicable)
+        'notification_results' => $results['notification_results'] // Notification results
+    ], 200);
+}
 
     public function showfilesforcheckout(ShowCheckoutFilesRequest $request)
 {

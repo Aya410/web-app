@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\FileRepository;
 use App\Events\FileUploadPendingApproval; 
+use App\Models\File;
+use App\Models\Version;
+
+
 class FileService
 {
     protected $fileRepository;
@@ -66,7 +70,8 @@ class FileService
         return [
             'status' => 'success',
             'message' => 'File uploaded successfully.',
-            'file' => $fileRecord
+            'file' => $fileRecord,
+            'version'=>$versionData
         ];
     }
     
@@ -120,14 +125,35 @@ public function uploadFileadmin($file, int $groupId)
     }
     return null;
 }
-
+/*
 public function uploadFile($file, int $groupId)
 {
     if ($file) {
         $fileRecord = $this->handleFileUpload($file, $groupId);
         
         // Fire event for admin approval
-        event(new FileUploadPendingApproval($fileRecord));
+       event(new FileUploadPendingApproval($fileRecord));
+
+        return $fileRecord;
+    }
+    return null;
+}
+*/
+
+public function uploadFile($file, int $groupId)
+{
+    if ($file) {
+        $fileRecord = $this->handleFileUpload($file, $groupId);
+        
+        // تحويل $fileRecord إلى كائن File إذا لزم الأمر
+        if (is_array($fileRecord)) {
+            $file = new File($fileRecord); // تأكد من وجود طريقة لبناء الكائن من المصفوفة
+        } else {
+            $file = $fileRecord;
+        }
+        
+        // Fire event for admin approval
+        event(new FileUploadPendingApproval($file));
 
         return $fileRecord;
     }
@@ -193,4 +219,12 @@ public function getHistoryUser($userId, $groupId)
     // Call the repository to retrieve files and their versions
     return $this->fileRepo->getHistoryUser($userId, $groupId);
 }
+public function getVersionInfoByUserId($userId)
+{
+    return $this->fileRepo->getVersionInfoByUserId($userId);
+    
+   }
+
+
+
 }

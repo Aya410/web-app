@@ -33,6 +33,13 @@ class EventServiceProvider extends ServiceProvider
             AfterNotificationListener::class,
         ], 
     
+
+        \App\Events\BeforeNotificationcheck::class => [
+            \App\Listeners\BeforeNotificationListenercheck::class,
+        ],
+        \App\Events\AfterNotificationcheck::class => [
+            \App\Listeners\AfterNotificationListenercheck::class,
+        ],
     ];
  
     /**

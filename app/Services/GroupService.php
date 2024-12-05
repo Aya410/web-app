@@ -116,7 +116,7 @@ public function getAllUsers()
         return $this->groupRepository->getAllUsers(); // Use the repository to get all users
     }
 
-   
+   /*
      // Add users to the group
      public function addUsersToGroup(int $groupId, array $userIds)
      {
@@ -127,9 +127,26 @@ public function getAllUsers()
                 // 'request_join' => true, // Assuming you want to track this in the pivot table
              ]);
          }
+     }*/
+
+     public function addUsersToGroup(int $groupId, array $userIds, int $authUserId)
+     {
+        
+
+        group_user::create([
+            'group_id' => $groupId,
+            'user_id' => $authUserId,
+            'request_join' => 1,
+        ]);
+         foreach ($userIds as $userId) {
+             group_user::create([
+                 'group_id' => $groupId,
+                 'user_id' => $userId,
+                // 'request_join' => $userId === $authUserId ? 1 : Null, // Set request_join based on authenticated user
+             ]);
+         }
+
      }
-
-
 
      public function getRequestedGroupsForUser()
      {

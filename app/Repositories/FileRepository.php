@@ -3,7 +3,7 @@ namespace App\Repositories;
 
 use App\Models\File;
 use App\Models\Version;
-
+use Illuminate\Support\Facades\DB;
 class FileRepository
 {
     public function create(array $data)
@@ -128,5 +128,40 @@ public function getFilesByState($request_join)
         });
     }
     
+
+    public function getVersionInfoByUserId($userId)
+    {
+        // Build the query using joins
+        $versions = DB::table('versions')
+            ->join('files', 'files.id', '=', 'versions.file_id')
+            ->join('groups', 'groups.id', '=', 'files.group_id')
+            ->select([
+                'versions.number as version_number',
+                'versions.time as version_time',
+                'versions.file as version_file',
+                'files.name as file_name',
+                'files.state as file_state',
+                'groups.name as group_name',
+            ])
+            ->where('versions.user_id', $userId)
+            ->get();
+    
+        // Map the results to the desired structure
+        return $versions->map(function ($version) {
+            return [
+                'version' => [
+                    'number' => $version->version_number,
+                    'time' => $version->version_time,
+                    'file' => $version->version_file,
+                ],
+                'file' => [
+                    'name' => $version->file_name ?? 'Unknown File Name',
+                    'state' => $version->file_state ?? 'Unknown State',
+                ],
+                'group' => [
+                    'name' => $version->group_name ?? 'No Group Assigned',
+                ],
+            ];
+        });}
 
 }

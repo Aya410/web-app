@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Services\FileService;
 use App\Http\Requests\FileUploadRequest;
@@ -9,6 +9,9 @@ use App\Http\Requests\ResponseRequest;
 use App\Http\Requests\GetFileVersionsRequest;
 use App\Http\Requests\UsergroupRequest;
 use App\Http\Requests\FileRequest;
+use App\Http\Requests\User_idRequest;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class FileController extends Controller
 {
     
@@ -134,7 +137,7 @@ class FileController extends Controller
 
     public function getHistory(FileRequest $request)
     {
-        $userId = auth()->id(); // Get the authenticated user's ID
+        $userId = $request->input('user_id'); // Get the authenticated user's ID
         $groupId = $request->input('group_id'); // Get group_id from the request
 
         // Call the service to get files and their versions
@@ -143,5 +146,12 @@ class FileController extends Controller
         return response()->json($files);
     }
 
-    
-}
+
+    public function getUserFileVersions(User_idRequest $request)
+    {
+        $userId=$request->input('user_id'); 
+
+        $data = $this->fileService->getVersionInfoByUserId($userId);
+        return response()->json($data);
+    }
+    }

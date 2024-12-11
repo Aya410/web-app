@@ -41,11 +41,14 @@ Route::middleware('check_superadmin')->group(function () {
 
     Route::get('/GetAllGroups', [SuperAdminController::class, 'GetAllGroups']);
     Route::get('/GetAllUsers', [SuperAdminController::class, 'GetAllUsers']);
-    Route::get('/GetGroupsOfAUser/{id}', [SuperAdminController::class, 'GetGroupsOfAUser']);
+    Route::get('/GetGroupsOfAUser/{id}', [SuperAdminController::class, 'GetGroupsOfAUser']);// id for user
     Route::get('/ShowUserFiles', [SuperAdminController::class, 'ShowUserFiles']);
-    Route::get('/ShowFilesOfAGroup/{id}', [SuperAdminController::class, 'ShowFilesOfAGroup']);
-
-
+    Route::get('/ShowFilesOfAGroup/{id}', [SuperAdminController::class, 'ShowFilesOfAGroup']);// id for group
+    Route::delete('/deletefile/{id}', [SuperAdminController::class, 'deletefile']); //id for file
+    Route::post('/AddFileBySuperAdmin', [SuperAdminController::class, 'AddFileBySuperAdmin']);
+    Route::get('/ShowVersionsOfFile/{id}', [SuperAdminController::class, 'ShowVersionsOfFile']);//id for file
+    Route::get('/ShowUsersOfGroup/{id}', [SuperAdminController::class, 'ShowUsersOfGroup']);//id for group
+    Route::delete('/DeleteUserFromGroup', [SuperAdminController::class, 'DeleteUserFromGroup']);
 });
 
 
@@ -70,7 +73,7 @@ Route::middleware('check_user')->group(function () {
     Route::post('/getFileVersionsuser', [GroupController::class, 'getFileVersionsuser']);
 
 
-Route::post('/store_group', [GroupController::class, 'store']);
+    Route::post('/store_group', [GroupController::class, 'store']);
 
 
     Route::post('/showAllUsers', [GroupController::class, 'showAllUsers']);
@@ -107,17 +110,17 @@ Route::middleware('check_groupadmin')->group(function () {
 
     Route::post('/getUsersByGroupId', [UserController::class, 'getUsersByGroupId']);
 
+    Route::delete('/DeleteUserFromGroup', [SuperAdminController::class, 'DeleteUserFromGroup']);
+
+
+
+    Route::post('/getallFiles', [FileController::class, 'getallFiles']);
 
 
 
 
-Route::post('/getallFiles', [FileController::class, 'getallFiles']);
 
-
-
-
-
-Route::post('/deleteFile', [FileController::class, 'deleteFile']);
+    Route::post('/deleteFile', [FileController::class, 'deleteFile']);
 
 
 

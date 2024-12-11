@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repositories;
+use App\Models\File;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\Group;
@@ -148,6 +149,63 @@ class SuperAdminRepository{
         $files=$group->files;
         return response()->json(['All files of this group' => $files], 200);
     }
+
+    public function deletefile($id)
+    {
+        $file = File::find($id);
+         if ($file) {
+           $file->delete();
+           return response()->json(['File deleted successfully'], 200);
+                  }
+         else{
+            return response()->json(['File not found'], 400);
+                  }
+    }
+
+    public function ShowVersionsOfFile($id){
+        $file=File::where('id',$id)->first();
+        $versions=$file->versions;
+        $Info = [];
+        foreach($versions as $version){
+            $user=User::where('id',$version->user_id)->first();
+            $info = [
+                'version_id'=>$version->id,
+                'file_name' =>$file->name ,
+                'file_verion'=>$version->number,
+                'version_path'=>$version->file,
+                'time' => $version->time,
+                'date' => $version->created_at,
+                'user_name'=>$user->name,
+                'user_email'=>$user->email,
+            ];
+            $Info[] = $info;
+        }
+        return response()->json(['All versions of this file' => $Info], 200);
+
+    }
+
+    public function ShowUsersOfGroup($id){
+        $group=Group::where('id',$id)->first();
+        $users=$group->users;
+        return response()->json(['All users of this group' => $users], 200);
+    }
+
+
+    public function DeleteUserFromGroup($request)
+    {
+         $user=group_user::where('user_id',$request->user_id)
+                          ->where('group_id',$request->group_id)->first();
+
+         if($user){
+            $user->delete();
+            return response()->json(['User deleted successfully'], 200);
+        }
+          else{
+            return response()->json(['User not found'], 400);
+        }
+
+    }
+
 
 
 

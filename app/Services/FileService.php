@@ -6,7 +6,7 @@ use App\Repositories\GroupRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\FileRepository;
-use App\Events\FileUploadPendingApproval; 
+use App\Events\FileUploadPendingApproval;
 class FileService
 {
     protected $fileRepository;
@@ -20,12 +20,12 @@ class FileService
 
     }
 
-    
+
     public function handleFileUpload($file, int $groupId, $requestJoin = null)
     {
         // Check if a file with the same group_id and name already exists
         $existingFile = $this->fileRepo->findByGroupAndName($groupId, $file->getClientOriginalName());
-    
+
         if ($existingFile) {
             // Return a response with a message indicating the file already exists
             return [
@@ -34,15 +34,15 @@ class FileService
                 'existing_file' => $existingFile
             ]; // Return array to be handled in controller
         }
-    
+
         // Proceed with file upload if no matching file is found
         $fileExtension = $file->getClientOriginalExtension();
         $fileName = time() . '.' . $fileExtension;
         $filePath = 'files';
         $file->move(public_path($filePath), $fileName);
-    
+
         $relativePath = $filePath . '/' . $fileName;
-    
+
         // Create File record
         $fileData = [
             'name' => $file->getClientOriginalName(),
@@ -51,7 +51,7 @@ class FileService
             'group_id' => $groupId,
         ];
         $fileRecord = $this->fileRepo->createFile($fileData);
-    
+
         // Create Version record
         $versionData = [
             'time' => now(),
@@ -61,7 +61,7 @@ class FileService
             'file_id' => $fileRecord->id,
         ];
         $this->fileRepo->createVersion($versionData);
-    
+
         // Return success response with file record
         return [
             'status' => 'success',
@@ -69,7 +69,7 @@ class FileService
             'file' => $fileRecord
         ];
     }
-    
+
 /*
 private function handleFileUpload($file, int $groupId, $requestJoin = null)
 {
@@ -78,7 +78,7 @@ private function handleFileUpload($file, int $groupId, $requestJoin = null)
 
     if ($existingFile) {
         // Return response with message and data
-    
+
        return $existingFile;
     }
     // Proceed with file upload if no match found
@@ -125,7 +125,7 @@ public function uploadFile($file, int $groupId)
 {
     if ($file) {
         $fileRecord = $this->handleFileUpload($file, $groupId);
-        
+
         // Fire event for admin approval
         event(new FileUploadPendingApproval($fileRecord));
 
@@ -155,7 +155,7 @@ public function uploadFile($file, int $groupId)
         }
     else{
 
-    
+
         $this->fileRepo->delete($fileRecord->id);
 
         return 'File rejected and deleted.';

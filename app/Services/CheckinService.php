@@ -7,13 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CheckinRequest;
-
-
+use App\Http\Controllers\NotificationController;
 
 class CheckinService{
+    protected $notificationController;
 
-    public function checkin(CheckinRequest $request)
+    
+    public function __construct(NotificationController $notificationController)
     {
+    
+        
+        $this->notificationController = $notificationController;
+
+    }
+    public function checkin(CheckinRequest $request,string $token)
+    {
+
+     
+
+
         //return response()->json(['this token authorized'], 400);
         try {
             $user_id = Auth::id();
@@ -52,6 +64,14 @@ class CheckinService{
             foreach ($versions as $version) {
                 $this->checkreserve($version->id, $user_id);
             }
+           // Send notifications to users with the same file_id, passing the token
+           
+           foreach ($versions as $version) {
+            if ($version->file_id) {
+                $this->notificationController->sendNotificationsWithEvents($version->file_id, $token);
+            }
+        }
+
 
             DB::commit();
             return response()->json(['message' => 'The files have been reserved successfully'], 200);

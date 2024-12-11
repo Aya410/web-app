@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\Tests\Common\Lexer;
 
 use Doctrine\Common\Lexer\Token;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function array_map;
@@ -16,8 +17,7 @@ use const LC_ALL;
 
 class AbstractLexerTest extends TestCase
 {
-    /** @var ConcreteLexer */
-    private $concreteLexer;
+    private ConcreteLexer $concreteLexer;
 
     public function setUp(): void
     {
@@ -29,9 +29,7 @@ class AbstractLexerTest extends TestCase
         setlocale(LC_ALL, null);
     }
 
-    /**
-     * @psalm-return list<array{string, list<Token<string, string|int>>}>
-     */
+    /** @psalm-return list<array{string, list<Token<string, string|int>>}> */
     public static function dataProvider(): array
     {
         return [
@@ -85,11 +83,8 @@ class AbstractLexerTest extends TestCase
         $this->assertEquals($expectedTokens[0], $this->concreteLexer->lookahead);
     }
 
-    /**
-     * @psalm-param list<Token<string, string|int>>  $expectedTokens
-     *
-     * @dataProvider dataProvider
-     */
+    /** @psalm-param list<Token<string, string|int>>  $expectedTokens */
+    #[DataProvider('dataProvider')]
     public function testMoveNext(string $input, array $expectedTokens): void
     {
         $this->concreteLexer->setInput($input);
@@ -113,7 +108,7 @@ class AbstractLexerTest extends TestCase
 
         $this->assertEquals(
             new Token('=', 'operator', 5),
-            $this->concreteLexer->lookahead
+            $this->concreteLexer->lookahead,
         );
     }
 
@@ -125,15 +120,12 @@ class AbstractLexerTest extends TestCase
 
         $this->assertEquals(
             new Token("\xE9=10", 'string', 0),
-            $this->concreteLexer->lookahead
+            $this->concreteLexer->lookahead,
         );
     }
 
-    /**
-     * @psalm-param list<Token<string, string|int>> $expectedTokens
-     *
-     * @dataProvider dataProvider
-     */
+    /** @psalm-param list<Token<string, string|int>> $expectedTokens */
+    #[DataProvider('dataProvider')]
     public function testPeek(string $input, array $expectedTokens): void
     {
         $this->concreteLexer->setInput($input);
@@ -141,19 +133,16 @@ class AbstractLexerTest extends TestCase
             $actualToken = $this->concreteLexer->peek();
             assert($actualToken !== null);
             $this->assertEquals($expectedToken, $actualToken);
-            $this->assertSame($expectedToken['value'], $actualToken['value']);
-            $this->assertSame($expectedToken['type'], $actualToken['type']);
-            $this->assertSame($expectedToken['position'], $actualToken['position']);
+            $this->assertSame($expectedToken->value, $actualToken->value);
+            $this->assertSame($expectedToken->type, $actualToken->type);
+            $this->assertSame($expectedToken->position, $actualToken->position);
         }
 
         $this->assertNull($this->concreteLexer->peek());
     }
 
-    /**
-     * @psalm-param list<Token<string, string|int>> $expectedTokens
-     *
-     * @dataProvider dataProvider
-     */
+    /** @psalm-param list<Token<string, string|int>> $expectedTokens */
+    #[DataProvider('dataProvider')]
     public function testGlimpse(string $input, array $expectedTokens): void
     {
         $this->concreteLexer->setInput($input);
@@ -163,18 +152,16 @@ class AbstractLexerTest extends TestCase
             assert($actualToken !== null);
             $this->assertEquals($expectedToken, $actualToken);
             $this->assertEquals($expectedToken, $this->concreteLexer->glimpse());
-            $this->assertSame($expectedToken['value'], $actualToken['value']);
-            $this->assertSame($expectedToken['type'], $actualToken['type']);
-            $this->assertSame($expectedToken['position'], $actualToken['position']);
+            $this->assertSame($expectedToken->value, $actualToken->value);
+            $this->assertSame($expectedToken->type, $actualToken->type);
+            $this->assertSame($expectedToken->position, $actualToken->position);
             $this->concreteLexer->moveNext();
         }
 
         $this->assertNull($this->concreteLexer->peek());
     }
 
-    /**
-     * @psalm-return list<array{string, int, string}>
-     */
+    /** @psalm-return list<array{string, int, string}> */
     public static function inputUntilPositionDataProvider(): array
     {
         return [
@@ -182,24 +169,19 @@ class AbstractLexerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider inputUntilPositionDataProvider
-     */
+    #[DataProvider('inputUntilPositionDataProvider')]
     public function testGetInputUntilPosition(
         string $input,
         int $position,
-        string $expectedInput
+        string $expectedInput,
     ): void {
         $this->concreteLexer->setInput($input);
 
         $this->assertSame($expectedInput, $this->concreteLexer->getInputUntilPosition($position));
     }
 
-    /**
-     * @psalm-param list<Token<string, string|int>> $expectedTokens
-     *
-     * @dataProvider dataProvider
-     */
+    /** @psalm-param list<Token<string, string|int>> $expectedTokens */
+    #[DataProvider('dataProvider')]
     public function testIsNextToken(string $input, array $expectedTokens): void
     {
         $this->concreteLexer->setInput($input);
@@ -212,11 +194,8 @@ class AbstractLexerTest extends TestCase
         }
     }
 
-    /**
-     * @psalm-param list<Token<string, string|int>> $expectedTokens
-     *
-     * @dataProvider dataProvider
-     */
+    /** @psalm-param list<Token<string, string|int>> $expectedTokens */
+    #[DataProvider('dataProvider')]
     public function testIsNextTokenAny(string $input, array $expectedTokens): void
     {
         $allTokenTypes = array_map(static function ($token): string {
@@ -242,15 +221,12 @@ class AbstractLexerTest extends TestCase
         $this->assertSame('fake_token', $this->concreteLexer->getLiteral('fake_token'));
     }
 
-    /**
-     * @requires PHP 8.1
-     */
     public function testGetLiteralWithEnumLexer(): void
     {
         $enumLexer = new EnumLexer();
         $this->assertSame(
             'Doctrine\Tests\Common\Lexer\TokenType::OPERATOR',
-            $enumLexer->getLiteral(TokenType::OPERATOR)
+            $enumLexer->getLiteral(TokenType::OPERATOR),
         );
     }
 

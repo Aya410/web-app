@@ -10,12 +10,15 @@ class Version extends Model
     use HasFactory;
     
     protected $fillable=['number','time','file','file_id','user_id'];
-    
+  /*  
     public function file()
     {
         return $this->belongsTo(File::class);
-    }
-    
+    }*/
+    public function file()
+{
+    return $this->belongsTo(File::class, 'file_id', 'id');
+}
     public function user()
     {
         return $this->belongsTo(User::class);

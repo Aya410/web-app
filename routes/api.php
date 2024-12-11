@@ -51,6 +51,7 @@ Route::middleware('check_superadmin')->group(function () {
     Route::delete('/DeleteUserFromGroup', [SuperAdminController::class, 'DeleteUserFromGroup']);
 });
 
+Route::post('/send-notification', [NotificationController::class, 'sendTestNotification']);
 
 
 Route::middleware('check_user')->group(function () {
@@ -82,8 +83,9 @@ Route::middleware('check_user')->group(function () {
     Route::post('/getFilesByGroupId', [GroupController::class, 'getFilesByGroupId']);
 
     Route::post('/getHistory', [FileController::class, 'getHistory']);
+    Route::post('/export-file-versions', [GroupController::class, 'exportFileVersionsToPdf']);
 
-
+  
 });
 
 
@@ -93,15 +95,18 @@ Route::middleware('check_user')->group(function () {
 
 Route::middleware('check_groupadmin')->group(function () {
 
+
     Route::post('/getFileVersionsforadmin', [GroupController::class, 'getFileVersions']);
 
     Route::get('/getGroupsforadmin', [GroupController::class, 'getGroups']);
-
-    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);
+ 
+    Route::post('/uploadFileadmin', [FileController::class, 'uploadFileadmin']);   
 
     Route::post('/search', [UserController::class, 'searchUser']);
 
+    Route::post('/exportFileVersionsToPdf', [GroupController::class, 'exportFileVersionsToPdf']);
 
+    
 
     Route::get('/pending', [FileController::class, 'getPendingFiles']);
 
@@ -123,13 +128,15 @@ Route::middleware('check_groupadmin')->group(function () {
     Route::post('/deleteFile', [FileController::class, 'deleteFile']);
 
 
+Route::post('/getUserFileVersions', [FileController::class, 'getUserFileVersions']);
 
+  Route::post('/exportnfoUserToPdf', [GroupController::class, 'exportnfoUserToPdf']);
+
+  
 
 
 
 });
-
-Route::post('/send-notification', [NotificationController::class, 'sendTestNotification']);
 
 
 

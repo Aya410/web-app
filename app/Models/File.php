@@ -10,11 +10,17 @@ class File extends Model
     use HasFactory;
 
     protected $fillable=['name','state', 'request_join','group_id'];
-
+/*
     public function group()
     {
         return $this->belongsTo(Group::class);
     }
+*/
+
+    public function group()
+{
+    return $this->belongsTo(Group::class, 'group_id', 'id');
+}
     public function versions()
     {
         return $this->hasMany(Version::class);
